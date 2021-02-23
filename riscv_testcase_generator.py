@@ -41,6 +41,8 @@ FUNCT_CODES = dict(JALR='000', BEQ='000', BNE='001', BLT='100', BGE='101', BLTU=
                    SLL='001', SLT='010', SLTU='011', XOR='100', SRL='101', SRA='101', OR='110', AND='111', MUL='000',
                    MULH='001', MULHSU='010', MULHU='011', DIV='100', DIVU='101', REM='110', REMU='111')
 
+# REGISTERS = {'x0', 'ra', 'sp', 'gp', 'tp', 't0','t1', 't2', 's0', 's1', 'a0', 'a1', 'a2', 'a3', }
+
 LOAD_INSTRUCTION_NAMES = {'LB', 'LH', 'LW', 'LBU', 'LHU'}
 
 STORE_INSTRUCTION_NAMES = {'SB', 'SH', 'SW'}
@@ -90,10 +92,10 @@ def generate_r(name):
     rd_binary = "{0:05b}".format(rd_decimal)
 
     instruction_binary = func7_instruction + rs2_binary + rs1_binary + func_instruction + rd_binary + opcode_instruction
-    # instruction_assembly = format(name, '10s') + "\tx" + str(rd_decimal) + ", x" + str(rs1_decimal) + ", x" + str(
-    #     rs2_decimal)
-    instruction_assembly = name + " x" + str(rd_decimal) + ", x" + str(rs1_decimal) + ", x" + str(
+    instruction_assembly = format(name, '10s') + "\tx" + str(rd_decimal) + ", x" + str(rs1_decimal) + ", x" + str(
         rs2_decimal)
+    # instruction_assembly = name + " x" + str(rd_decimal) + ", x" + str(rs1_decimal) + ", x" + str(
+    #     rs2_decimal)
 
     add_instructions(instruction_binary, instruction_assembly, convert_to_hex(instruction_binary))
 
@@ -118,28 +120,27 @@ def generate_i(name):
         shamt_decimal = np.random.randint(0, 32)
         shamt_binary = "{0:05b}".format(shamt_decimal)
         instruction_binary = imm + shamt_binary + rs1_binary + func_instruction + rd_binary + opcode_instruction
-        # instruction_assembly = format(name, '10s') + "\tx" + str(rd_decimal) + ", x" + str(rs1_decimal) + ", " + str(
+        instruction_assembly = format(name, '10s') + "\tx" + str(rd_decimal) + ", x" + str(rs1_decimal) + ", " + str(shamt_decimal)
+        # instruction_assembly = name + " x" + str(rd_decimal) + ", x" + str(rs1_decimal) + ", " + str(
         #     shamt_decimal)
-        instruction_assembly = name + " x" + str(rd_decimal) + ", x" + str(rs1_decimal) + ", " + str(
-            shamt_decimal)
     elif name in LOAD_INSTRUCTION_NAMES:
         rs1_decimal = 0
         rs1_binary = "{0:05b}".format(rs1_decimal)
         imm_decimal = random.choice(STORED_MEMORY_LOCATIONS)  # Choose from stored in locations
         imm_binary = "{0:012b}".format(imm_decimal)
         instruction_binary = imm_binary + rs1_binary + func_instruction + rd_binary + opcode_instruction
-        # instruction_assembly = format(name, '10s') + "\tx" + str(rd_decimal) + ", " + str(imm_decimal) + "(x" \
-        #     + str(rs1_decimal) + ")"
-        instruction_assembly = name + " x" + str(rd_decimal) + ", " + str(imm_decimal) + "(x" \
+        instruction_assembly = format(name, '10s') + "\tx" + str(rd_decimal) + ", " + str(imm_decimal) + "(x" \
             + str(rs1_decimal) + ")"
+        # instruction_assembly = name + " x" + str(rd_decimal) + ", " + str(imm_decimal) + "(x" \
+        #     + str(rs1_decimal) + ")"
     else:
         imm_decimal = np.random.randint(0, 4095)
         imm_binary = "{0:012b}".format(imm_decimal)
         instruction_binary = imm_binary + rs1_binary + func_instruction + rd_binary + opcode_instruction
-        # instruction_assembly = format(name, '10s') + "\tx" + str(rd_decimal) + ", x" + str(rs1_decimal) + ", " + str(
-        #     imm_decimal)
-        instruction_assembly = name + " x" + str(rd_decimal) + ", x" + str(rs1_decimal) + ", " + str(
+        instruction_assembly = format(name, '10s') + "\tx" + str(rd_decimal) + ", x" + str(rs1_decimal) + ", " + str(
             imm_decimal)
+        # instruction_assembly = name + " x" + str(rd_decimal) + ", x" + str(rs1_decimal) + ", " + str(
+        #     imm_decimal)
 
     add_instructions(instruction_binary, instruction_assembly, convert_to_hex(instruction_binary))
 
@@ -161,10 +162,10 @@ def generate_s(name):
 
     instruction_binary = imm_binary[0:7] + rs2_binary + rs1_binary + func_instruction + imm_binary[
                                                                                          7:] + opcode_instruction
-    # instruction_assembly = format(name, '10s') + "\tx" + str(rs2_decimal) + ", " + str(imm_decimal) + "(x" \
-    #     + str(rs1_decimal) + ")"
-    instruction_assembly = name + " x" + str(rs2_decimal) + ", " + str(imm_decimal) + "(x" \
+    instruction_assembly = format(name, '10s') + "\tx" + str(rs2_decimal) + ", " + str(imm_decimal) + "(x" \
         + str(rs1_decimal) + ")"
+    # instruction_assembly = name + " x" + str(rs2_decimal) + ", " + str(imm_decimal) + "(x" \
+    #     + str(rs1_decimal) + ")"
     add_instructions(instruction_binary, instruction_assembly, convert_to_hex(instruction_binary))
 
 
@@ -187,10 +188,10 @@ def generate_sb(name):
     imm_binary = "{0:012b}".format(imm_decimal)
     instruction_binary = imm_binary[0] + imm_binary[2:8] + rs2_binary + rs1_binary + func_instruction + \
         imm_binary[8:] + imm_binary[1] + opcode_instruction
-    # instruction_assembly = format(name, '10s') + "\tx" + str(rs1_decimal) + ", x" + str(rs2_decimal) + ", " + str(
-    #     imm_decimal)
-    instruction_assembly = name + " x" + str(rs1_decimal) + ", x" + str(rs2_decimal) + ", " + str(
+    instruction_assembly = format(name, '10s') + "\tx" + str(rs1_decimal) + ", x" + str(rs2_decimal) + ", " + str(
         imm_decimal)
+    # instruction_assembly = name + " x" + str(rs1_decimal) + ", x" + str(rs2_decimal) + ", " + str(
+    #     imm_decimal)
 
     add_instructions(instruction_binary, instruction_assembly, convert_to_hex(instruction_binary))
 
@@ -205,8 +206,8 @@ def generate_u(name):
     imm_binary = "{0:020b}".format(imm_decimal)
 
     instruction_binary = imm_binary + rd_binary + opcode_instruction
-    # instruction_assembly = format(name, '10s') + "\tx" + str(rd_decimal) + ", " + str(imm_decimal)
-    instruction_assembly = name + " x" + str(rd_decimal) + ", " + str(imm_decimal)    
+    instruction_assembly = format(name, '10s') + "\tx" + str(rd_decimal) + ", " + str(imm_decimal)
+    # instruction_assembly = name + " x" + str(rd_decimal) + ", " + str(imm_decimal)    
 
     add_instructions(instruction_binary, instruction_assembly, convert_to_hex(instruction_binary))
 
@@ -226,8 +227,8 @@ def generate_uj(name):
     imm_binary = "{0:020b}".format(imm_decimal)
 
     instruction_binary = imm_binary[0] + imm_binary[10:] + imm_binary[9] + imm_binary[1:9] + rd_binary + opcode_instruction
-    # instruction_assembly = format(name, '10s') + "\tx" + str(rd_decimal) + ", " + str(imm_decimal)
-    instruction_assembly = name + " x" + str(rd_decimal) + ", " + str(imm_decimal)
+    instruction_assembly = format(name, '10s') + "\tx" + str(rd_decimal) + ", " + str(imm_decimal)
+    # instruction_assembly = name + " x" + str(rd_decimal) + ", " + str(imm_decimal)
 
     add_instructions(instruction_binary, instruction_assembly, convert_to_hex(instruction_binary))
 
@@ -296,11 +297,11 @@ for test_case in range(int(TEST_CASES_NUMBER)):
     # hex_file.write("@00000000\n")
 
     for i in range(Instructions_Number):
-        # binary_file.write("0b" + Instructions_list_binary[i] + "\n")
-        binary_file.write(Instructions_list_binary[i] + "\n")
-        assembly_file.write(str.lower(instructions_list_assembly[i]) + "\n")
-        # assembly_file.write(str(hex(i * 4))[2:] + ':\t\t' + 
-        #     instructions_list_hex[i] + '\t' + instructions_list_assembly[i] + "\n")
+        binary_file.write("0b" + Instructions_list_binary[i] + "\n")
+        # binary_file.write(Instructions_list_binary[i] + "\n")
+        # assembly_file.write(str.lower(instructions_list_assembly[i]) + "\n")
+        assembly_file.write(str(hex(i * 4))[2:] + ':\t\t' + 
+            instructions_list_hex[i] + '\t' + instructions_list_assembly[i] + "\n")
         split_hex = re.findall('..', instructions_list_hex[i])
         if i % 4 == 0 and i != 0:
             hex_file.write("\n")
