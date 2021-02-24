@@ -1,5 +1,0 @@
-L1:
-JMP L2
-DIV R6,R25,R40
-L2:
-HALT
