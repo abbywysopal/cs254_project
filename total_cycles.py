@@ -8,6 +8,11 @@ import _thread
 
 def output_data():
     files = glob.glob("data/binary*")
+    start = clock()
+    read_disk_sector()
+    end = clock()
+    elapsed_time = (float)(end - start) / (float)CLOCKS_PER_SEC
+    printf("Elapsed time: %f seconds\n", elapsed_time)
 
     for filename in files:
         file = open(filename)

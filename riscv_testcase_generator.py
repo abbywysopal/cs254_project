@@ -16,7 +16,6 @@ def reverse_dict_with_iterable(dictionary):
             rev[item] = key
     return rev
 
-
 # Instructions classified into types
 TYPES_TO_INSTRUCTION = dict(U_TYPE={'LUI', 'AUIPC'}, UJ_TYPE={'JAL'},
                             SB_TYPE={'BEQ', 'BNE', 'BLT', 'BGE', 'BLTU', 'BGEU'},
