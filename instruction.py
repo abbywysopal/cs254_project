@@ -182,15 +182,15 @@ class LOADInstruction(WRITEBACKInstruction):
 
     def execute(self):
         self.result = 0
-        print(self.operand_vals[0] + self.operand_vals[1] + 0)
-        a = gv.data_mem[self.operand_vals[0] + self.operand_vals[1] + 0]
-        b = gv.data_mem[self.operand_vals[0] + self.operand_vals[1] + 1]
-        c = gv.data_mem[self.operand_vals[0] + self.operand_vals[1] + 2]
-        d = gv.data_mem[self.operand_vals[0] + self.operand_vals[1] + 3]
-        self.result = a + (b << 8) + (c << 16) + (d << 24)
+        if(gv.data_mem != []):
+            a = gv.data_mem[self.operand_vals[0] + self.operand_vals[1] + 0]
+            b = gv.data_mem[self.operand_vals[0] + self.operand_vals[1] + 1]
+            c = gv.data_mem[self.operand_vals[0] + self.operand_vals[1] + 2]
+            d = gv.data_mem[self.operand_vals[0] + self.operand_vals[1] + 3]
+            self.result = a + (b << 8) + (c << 16) + (d << 24)
 
-        if self.result >> 31 == 1:
-            self.result = -((0xFFFFFFFF^self.result) + 1)
+            if self.result >> 31 == 1:
+                self.result = -((0xFFFFFFFF^self.result) + 1)
 
 # LDI R2,76 (dest = imm)
 class LDIInstruction(WRITEBACKInstruction):

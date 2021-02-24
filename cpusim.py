@@ -2,7 +2,7 @@
 
 import re
 import argparse
-
+import glob
 from instruction import *
 from fetchunit import *
 from decunit import *
@@ -26,7 +26,7 @@ class Computor:
         gv.R = RegisterFile(48)
         self.clock_cnt = 0
 
-    def run_non_pipelined(self):
+    def run_non_pipelined(self, filename):
         if debug:
             print("RUNNING NON-PIPELINED")
         last_instr = getNOP()
@@ -68,9 +68,12 @@ class Computor:
                 print("END")
 
         # if debug:
+        output_filename = "tests/data/output_assembly" + filename[filename.index("y") + 1 :]
+        output_file = open(output_filename, 'w')
+        output_file.write(str(self.clock_cnt))
         print("Cycles taken:", self.clock_cnt)
 
-    def run_pipelined(self):
+    def run_pipelined(self, filename):
         if debug:
             print("RUNNING PIPELINED")
         last_instr = getNOP()
@@ -104,7 +107,10 @@ class Computor:
                 print("END")
         #
         # if debug:
-        # print("Cycles taken:", self.clock_cnt)
+        output_filename = "tests/data/output_assembly" + filename[filename.index("y") + 1 :]
+        output_file = open(output_filename, 'w')
+        output_file.write(str(self.clock_cnt))
+        print("Cycles taken:", self.clock_cnt)
 
 
 def assemble(asm, program):
@@ -164,24 +170,21 @@ def print_data_mem():
         #     print word,
 
 
-def main(args):
-    input_filename = args.file
+def main():
+    files = glob.glob("tests/data/*.ass")
+    for filename in files:
+        print(filename)
+        with open(filename, 'r') as ass_file:
+            asm = ass_file.readlines()
 
-    with open(input_filename, 'r') as ass_file:
-        asm = ass_file.readlines()
+        program = []
+        assemble(asm, program)
 
-    program = []
-    assemble(asm, program)
+        gv.pipeline = Pipeline()
+        pc3000 = Computor(program)
 
-    gv.pipeline = Pipeline()
-    pc3000 = Computor(program)
-
-    if args.pipelined:
         gv.is_pipelined = True
-        pc3000.run_pipelined()
-    else:
-        gv.is_pipelined = False
-        pc3000.run_non_pipelined()
+        pc3000.run_pipelined(filename)
 
     # if debug:
     # print_data_mem()
@@ -189,10 +192,10 @@ def main(args):
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--file', required=True, help='Input .ass file')
-    parser.add_argument('--pipelined', required=False, default=0, type=int, choices={0, 1}, help='Run in pipelined mode?')
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument('--file', required=True, help='Input .ass file')
+    # parser.add_argument('--pipelined', required=False, default=0, type=int, choices={0, 1}, help='Run in pipelined mode?')
 
-    args = parser.parse_args()
+    # args = parser.parse_args()
 
-    main(args)
+    main()

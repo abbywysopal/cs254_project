@@ -40,6 +40,6 @@ def output_data():
 
 # # Let's go!
 # env.run(until=10)
-output_data()
+# output_data()
 
-_thread.start_new_thread(output_data,())
+# _thread.start_new_thread(output_data,())
