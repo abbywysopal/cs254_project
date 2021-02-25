@@ -1,0 +1,4 @@
+L1:
+IADDR R35,L2
+L2:
+HALT

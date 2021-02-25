@@ -11,6 +11,7 @@ from writeback_unit import *
 from registerfile import *
 from pipeline import *
 import gv
+import _thread 
 
 debug = True
 debug = False
@@ -107,7 +108,9 @@ class Computor:
                 print("END")
         #
         # if debug:
-        output_filename = "tests/data/output_assembly" + filename[filename.index("y") + 1 :]
+        output_filename = "tests/data/output_assembly" + filename[filename.index("y") + 1 :filename.index(".")] + ".txt"
+        print(filename)
+        print(output_filename)
         output_file = open(output_filename, 'w')
         output_file.write(str(self.clock_cnt))
         print("Cycles taken:", self.clock_cnt)
@@ -184,7 +187,7 @@ def main():
         pc3000 = Computor(program)
 
         gv.is_pipelined = True
-        pc3000.run_pipelined(filename)
+        _thread.start_new_thread(pc3000.run_pipelined,(filename,))
 
     # if debug:
     # print_data_mem()

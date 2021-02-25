@@ -173,7 +173,7 @@ def generate_instruction(name):
 
 # Validaing Input
 while int(TEST_CASES_NUMBER) < 1:
-    TEST_CASES_NUMBER = 200
+    TEST_CASES_NUMBER = 500
 
 for test_case in range(int(TEST_CASES_NUMBER)):
     # Initializing all variables

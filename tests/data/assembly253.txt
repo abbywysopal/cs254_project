@@ -1,0 +1,4 @@
+L1:
+SUB R23,R1,R5
+L2:
+HALT
