@@ -1,9 +1,13 @@
 # cs254_project
 
-$ python cpusim_generator.py
+$ python3 cpusim_generator.py
 
-generates 200 assembly files with 4 to 36 instrcutions in each
+generates 500 assembly files with 4 to 36 instrcutions in each
 
-$ python cpusim.py
+$ python3 cpusim.py
 
 runs each assembly file in "tests/data" through the pipeline
+
+$ python3 create_json.py
+
+creates a json file for each assembly file and output file pair
