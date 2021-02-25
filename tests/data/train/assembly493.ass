@@ -1,0 +1,4 @@
+L1:
+BEQZ R3,L2
+L2:
+HALT

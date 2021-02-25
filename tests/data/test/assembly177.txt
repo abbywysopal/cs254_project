@@ -1,0 +1,4 @@
+L1:
+BNEZ R26,L2
+L2:
+HALT

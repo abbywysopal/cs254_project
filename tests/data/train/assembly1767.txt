@@ -1,0 +1,5 @@
+L1:
+WRS 298847
+JMP L2
+L2:
+HALT

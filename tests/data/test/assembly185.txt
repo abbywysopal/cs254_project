@@ -1,0 +1,5 @@
+L1:
+JMP L2
+BGEZ R5,L2
+L2:
+HALT

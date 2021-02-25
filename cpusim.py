@@ -69,12 +69,11 @@ class Computor:
                 print("END")
 
         # if debug:
-        output_filename = "tests/data/output_assembly" + filename[filename.index("y") + 1 :]
+        output_filename = "tests/data/output_assembly" + filename[filename.index("y") + 1 :filename.index(".")] + ".txt"
         output_file = open(output_filename, 'w')
         output_file.write(str(self.clock_cnt))
-        print("Cycles taken:", self.clock_cnt)
 
-    def run_pipelined(self, filename):
+    def run_pipelined(self, filename, path):
         if debug:
             print("RUNNING PIPELINED")
         last_instr = getNOP()
@@ -108,12 +107,9 @@ class Computor:
                 print("END")
         #
         # if debug:
-        output_filename = "tests/data/output_assembly" + filename[filename.index("y") + 1 :filename.index(".")] + ".txt"
-        print(filename)
-        print(output_filename)
+        output_filename = path + "output_assembly" + filename[filename.index("y") + 1 :filename.index(".")] + ".txt"
         output_file = open(output_filename, 'w')
         output_file.write(str(self.clock_cnt))
-        print("Cycles taken:", self.clock_cnt)
 
 
 def assemble(asm, program):
@@ -173,10 +169,10 @@ def print_data_mem():
         #     print word,
 
 
-def main():
-    files = glob.glob("tests/data/*.ass")
+def main(path):
+    files = glob.glob(path + "*.ass")
     for filename in files:
-        print(filename)
+        # print(filename)
         with open(filename, 'r') as ass_file:
             asm = ass_file.readlines()
 
@@ -187,7 +183,7 @@ def main():
         pc3000 = Computor(program)
 
         gv.is_pipelined = True
-        _thread.start_new_thread(pc3000.run_pipelined,(filename,))
+        _thread.start_new_thread(pc3000.run_pipelined,(filename,path))
 
     # if debug:
     # print_data_mem()
@@ -200,5 +196,5 @@ if __name__ == '__main__':
     # parser.add_argument('--pipelined', required=False, default=0, type=int, choices={0, 1}, help='Run in pipelined mode?')
 
     # args = parser.parse_args()
-
-    main()
+    path = str(sys.argv[1])
+    main(path)

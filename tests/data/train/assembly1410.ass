@@ -1,0 +1,4 @@
+L1:
+IADDR R5,L2
+L2:
+HALT

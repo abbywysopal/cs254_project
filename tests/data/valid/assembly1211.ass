@@ -1,0 +1,5 @@
+L1:
+JUMP R9
+BEQZ R35,L2
+L2:
+HALT

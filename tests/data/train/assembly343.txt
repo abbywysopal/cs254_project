@@ -1,0 +1,5 @@
+L1:
+WR R21
+BNEZ R39,L2
+L2:
+HALT

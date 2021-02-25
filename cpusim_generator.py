@@ -6,7 +6,8 @@
 import random
 import numpy as np
 import re
-
+import argparse
+import sys
 
 # Function to reverse a dictionary keys with values
 def reverse_dict_with_iterable(dictionary):
@@ -38,22 +39,6 @@ def reverse_dict_with_iterable(dictionary):
 # MUL x
 # DIV x
 
-
-TYPES_TO_INSTRUCTION = dict(U_TYPE={'WRS', 'WR'}, UJ_TYPE={'JMP', 'JUMP', 'IADDR'},
-                            SB_TYPE={'BGEZ', 'BLTZ', 'BEQZ', 'BNEZ'},
-                            I_TYPE={'LDI', 'ADDI', 'SUBI', 'MULI', "DIVI", 'STORE', 'LOAD'},
-                            R_TYPE={'XOR', 'ADD', 'SUB', 'MUL', "DIV"}, L_TYPE = {'L'})
-
-LOAD_INSTRUCTION_NAMES = {'LDI'}
-
-STORE_INSTRUCTION_NAMES = {'STORE', 'WR', "WRS"}
-
-M_EXTENSION_NAMES = {'MUL', 'MULI', 'DIV', 'DIVI'}
-
-# Reversing the instructions table to correlate each instruction with its type directly
-INSTRUCTION_TO_TYPE = reverse_dict_with_iterable(TYPES_TO_INSTRUCTION)
-
-TEST_CASES_NUMBER = 0
 
 # Appending Instruction in corresponding lists
 def add_instructions(assembly):
@@ -170,51 +155,68 @@ def generate_instruction(name):
     elif INSTRUCTION_TO_TYPE[name] == 'L_TYPE':
         generate_label(name)
 
+if __name__ == '__main__':
 
-# Validaing Input
-while int(TEST_CASES_NUMBER) < 1:
-    TEST_CASES_NUMBER = 500
+    path = str(sys.argv[1])
 
-for test_case in range(int(TEST_CASES_NUMBER)):
-    # Initializing all variables
-    REGISTERS_NUMBER = 48
-    # Instructions_Number = 15
-    Instructions_Number = random.randint(1,30)
-    INSTRUCTION_CURRENT = 0
-    STORED_MEMORY_LOCATIONS = []
-    STORED_LABELS = [1]
-    instructions_list_assembly = []
+    TYPES_TO_INSTRUCTION = dict(U_TYPE={'WRS', 'WR'}, UJ_TYPE={'JMP', 'JUMP', 'IADDR'},
+                                SB_TYPE={'BGEZ', 'BLTZ', 'BEQZ', 'BNEZ'},
+                                I_TYPE={'LDI', 'ADDI', 'SUBI', 'MULI', "DIVI", 'STORE', 'LOAD'},
+                                R_TYPE={'XOR', 'ADD', 'SUB', 'MUL', "DIV"}, L_TYPE = {'L'})
 
-    # Random Registers to use
-    REGISTERS_TO_USE = np.random.randint(0, 47, int(REGISTERS_NUMBER))
-    Instructions_Number = int(Instructions_Number)
+    LOAD_INSTRUCTION_NAMES = {'LDI'}
 
-    # Generating instructions
-    for instruction in range(Instructions_Number):
-        INSTRUCTION_CURRENT = instruction
-        instruction_name = random.choice(list(INSTRUCTION_TO_TYPE.keys()))
+    STORE_INSTRUCTION_NAMES = {'STORE', 'WR', "WRS"}
 
-        # Check for load instruction with no prior store
-        while instruction_name in LOAD_INSTRUCTION_NAMES and len(STORED_MEMORY_LOCATIONS) == 0:
+    M_EXTENSION_NAMES = {'MUL', 'MULI', 'DIV', 'DIVI'}
+
+    # Reversing the instructions table to correlate each instruction with its type directly
+    INSTRUCTION_TO_TYPE = reverse_dict_with_iterable(TYPES_TO_INSTRUCTION)
+
+    TEST_CASES_NUMBER = 0
+    # Validaing Input
+    while int(TEST_CASES_NUMBER) < 1:
+        TEST_CASES_NUMBER = int(sys.argv[2])
+
+    for test_case in range(int(TEST_CASES_NUMBER)):
+        # Initializing all variables
+        REGISTERS_NUMBER = 48
+        # Instructions_Number = 15
+        Instructions_Number = random.randint(1,30)
+        INSTRUCTION_CURRENT = 0
+        STORED_MEMORY_LOCATIONS = []
+        STORED_LABELS = [1]
+        instructions_list_assembly = []
+
+        # Random Registers to use
+        REGISTERS_TO_USE = np.random.randint(0, 47, int(REGISTERS_NUMBER))
+        Instructions_Number = int(Instructions_Number)
+
+        # Generating instructions
+        for instruction in range(Instructions_Number):
+            INSTRUCTION_CURRENT = instruction
             instruction_name = random.choice(list(INSTRUCTION_TO_TYPE.keys()))
 
-        generate_instruction(instruction_name)
+            # Check for load instruction with no prior store
+            while instruction_name in LOAD_INSTRUCTION_NAMES and len(STORED_MEMORY_LOCATIONS) == 0:
+                instruction_name = random.choice(list(INSTRUCTION_TO_TYPE.keys()))
 
-    # Writing and formatting ouput files
-    assembly_file = open("tests/data/assembly" + str(test_case + 1) + ".ass", "w")
-    assembly_text = open("tests/data/assembly" + str(test_case + 1) + ".txt", "w")
+            generate_instruction(instruction_name)
 
-    assembly_file.write('L1:\n')
-    assembly_text.write('L1:\n')
-    for i in range(Instructions_Number):
-        assembly_file.write(instructions_list_assembly[i] + "\n")
-        assembly_text.write(instructions_list_assembly[i] + "\n")
+        # Writing and formatting ouput files
+        assembly_file = open(path + "assembly" + str(test_case + 1) + ".ass", "w")
+        assembly_text = open(path + "assembly" + str(test_case + 1) + ".txt", "w")
 
-    lastlabel = STORED_LABELS.pop() + 1
-    assembly_file.write('L' + str(lastlabel) + ':\n')
-    assembly_text.write('L' + str(lastlabel) + ':\n')    
-    assembly_file.write('HALT\n')
-    assembly_file.close()
-    assembly_text.write('HALT\n')
-    assembly_text.close()
+        assembly_file.write('L1:\n')
+        assembly_text.write('L1:\n')
+        for i in range(Instructions_Number):
+            assembly_file.write(instructions_list_assembly[i] + "\n")
+            assembly_text.write(instructions_list_assembly[i] + "\n")
 
+        lastlabel = STORED_LABELS.pop() + 1
+        assembly_file.write('L' + str(lastlabel) + ':\n')
+        assembly_text.write('L' + str(lastlabel) + ':\n')    
+        assembly_file.write('HALT\n')
+        assembly_file.close()
+        assembly_text.write('HALT\n')
+        assembly_text.close()

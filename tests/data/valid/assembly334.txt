@@ -1,0 +1,5 @@
+L1:
+JUMP R42
+WR R39
+L2:
+HALT

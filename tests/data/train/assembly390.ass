@@ -1,0 +1,4 @@
+L1:
+JUMP R22
+L2:
+HALT

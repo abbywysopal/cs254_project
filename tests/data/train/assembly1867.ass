@@ -1,0 +1,4 @@
+L1:
+BEQZ R43,L2
+L2:
+HALT

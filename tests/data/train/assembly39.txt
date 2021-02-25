@@ -1,0 +1,5 @@
+L1:
+XOR R20,R25,R1
+JMP L2
+L2:
+HALT

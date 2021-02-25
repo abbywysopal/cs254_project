@@ -1,0 +1,4 @@
+L1:
+JUMP R6
+L2:
+HALT

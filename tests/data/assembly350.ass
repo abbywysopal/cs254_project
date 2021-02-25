@@ -1,5 +1,0 @@
-L1:
-WR R12
-WR R6
-L2:
-HALT

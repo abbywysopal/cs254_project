@@ -1,0 +1,4 @@
+L1:
+DIV R1,R20,R8
+L2:
+HALT

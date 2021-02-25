@@ -1,0 +1,5 @@
+L1:
+L2:
+BEQZ R33,L3
+L3:
+HALT

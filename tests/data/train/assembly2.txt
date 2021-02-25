@@ -1,0 +1,4 @@
+L1:
+BLTZ R0,L2
+L2:
+HALT

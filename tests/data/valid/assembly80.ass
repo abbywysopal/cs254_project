@@ -1,0 +1,5 @@
+L1:
+BLTZ R28,L2
+WR R32
+L2:
+HALT

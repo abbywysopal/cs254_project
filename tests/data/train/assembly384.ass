@@ -1,0 +1,4 @@
+L1:
+MUL R27,R6,R6
+L2:
+HALT

@@ -1,0 +1,4 @@
+L1:
+IADDR R18,L2
+L2:
+HALT
