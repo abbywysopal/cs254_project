@@ -1,5 +1,0 @@
-L1:
-JMP L2
-JUMP R37
-L2:
-HALT

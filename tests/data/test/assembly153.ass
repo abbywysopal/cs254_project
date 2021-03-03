@@ -1,4 +1,0 @@
-L1:
-BEQZ R36,L2
-L2:
-HALT

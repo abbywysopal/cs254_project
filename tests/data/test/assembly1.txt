@@ -1,6 +1,0 @@
-L1:
-WR R1
-L2:
-LOAD R0,R32,1792
-L3:
-HALT
