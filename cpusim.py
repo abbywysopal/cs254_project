@@ -16,7 +16,6 @@ import json
 debug = True
 debug = False
 
-ml_data = dict()
 
 class Computor:
     def __init__(self, program):
@@ -76,7 +75,7 @@ class Computor:
         output_file.write(str(self.clock_cnt))
         print("Cycles taken:", self.clock_cnt)
 
-    def run_pipelined(self, file_name):
+    def run_pipelined(self, file_name, ml_data):
         if debug:
             print("RUNNING PIPELINED")
         last_instr = getNOP()
@@ -114,22 +113,22 @@ class Computor:
         # output_file = open(output_filename, 'w')
         # output_file.write(str(self.clock_cnt))
         print("Cycles taken:", self.clock_cnt)
-        ml_data["cycles taken"] = self.clock_cnt
+        ml_data["cycles"] = self.clock_cnt
         # print(ml_data)
-        with open('{}_json.txt'.format(file_name), 'w') as outfile:
-            json.dump(ml_data, outfile, indent=4)
         
 
 
-def assemble(asm, program):
+def assemble(asm, program, ml_data):
     label_targets = {}
     same_line_no = []
     addr = 0
     num_labels = 0
 
+    ml_data["instr"] = []
+
     for line_no in range(len(asm)):
         line = asm[line_no].strip()
-        ml_data[line_no] = line
+        ml_data["instr"].append(line)
         if ':' in line and "DATA" not in line:
             same_line_no.append(line[:-1])
         elif 'DATA' not in line:
@@ -180,23 +179,38 @@ def print_data_mem():
 
 
 def main(args):
-    input_filename = args.file
 
-    with open(input_filename, 'r') as ass_file:
-        asm = ass_file.readlines()
+    list = []
+    for i in range(4):
+        input_filename = 'tests/assembly/test{}.ass'.format(i+1)
 
-    program = []
-    assemble(asm, program)
+        with open(input_filename, 'r') as ass_file:
+            asm = ass_file.readlines()
 
-    gv.pipeline = Pipeline()
-    pc3000 = Computor(program)
+        ml_data = dict()
 
-    if args.pipelined:
-        gv.is_pipelined = True
-        pc3000.run_pipelined(file_name=input_filename)
-    else:
-        gv.is_pipelined = False
-        pc3000.run_non_pipelined()
+        program = []
+        assemble(asm, program, ml_data)
+
+        gv.pipeline = Pipeline()
+        pc3000 = Computor(program)
+
+        if args.pipelined:
+            gv.is_pipelined = True
+            pc3000.run_pipelined(file_name='ml_data', ml_data=ml_data)
+        else:
+            gv.is_pipelined = False
+            pc3000.run_non_pipelined()
+
+        print(ml_data)
+        list.append(ml_data)
+
+    with open('{}.txt'.format('ml_data'), 'w') as outfile:
+        outfile.write('[')
+        for item in list:
+            outfile.write("%s,\n" % item)
+        outfile.write(']')
+        # json.dump(ml_data, outfile, indent=4)
 
     # if debug:
     # print_data_mem()
@@ -205,7 +219,7 @@ def main(args):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--file', required=True, help='Input .ass file')
+    # parser.add_argument('--file', required=True, help='Input .ass file')
     parser.add_argument('--pipelined', required=False, default=0, type=int, choices={0, 1}, help='Run in pipelined mode?')
 
     args = parser.parse_args()
