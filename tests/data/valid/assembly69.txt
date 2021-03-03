@@ -1,5 +1,0 @@
-L1:
-WR R32
-BNEZ R3,L2
-L2:
-HALT

@@ -1,5 +1,0 @@
-L1:
-JMP L2
-JMP L2
-L2:
-HALT

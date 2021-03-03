@@ -1,4 +1,0 @@
-L1:
-STORE R7,R3,888
-L2:
-HALT

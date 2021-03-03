@@ -183,7 +183,8 @@ def main(path):
         pc3000 = Computor(program)
 
         gv.is_pipelined = True
-        _thread.start_new_thread(pc3000.run_pipelined,(filename,path))
+        # _thread.start_new_thread(pc3000.run_pipelined,(filename,path))
+        pc3000.run_pipelined(filename,path)
 
     # if debug:
     # print_data_mem()

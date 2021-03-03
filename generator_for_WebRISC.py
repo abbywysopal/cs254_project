@@ -37,11 +37,13 @@ OPCODES = dict(LUI='0110111', AUIPC='0010111', JAL='1101111', JALR='1100111', BE
                MULHSU='0110011', MULHU='0110011', DIV='0110011', DIVU='0110011', REM='0110011', REMU='0110011')
 
 # Function codes of all instructions that need one
-FUNCT_CODES = dict(JALR='000', BEQ='000', BNE='001', BLT='100', BGE='101', BLTU='110', BGEU='111', LB='000', LH='001',
-                   LW='010', LBU='100', LHU='101', SB='000', SH='001', SW='010', ADDI='000', SLTI='010', SLTIU='011',
-                   XORI='100', ORI='110', ANDI='111', SLLI='001', SRLI='101', SRAI='101', ADD='000', SUB='000',
-                   SLL='001', SLT='010', SLTU='011', XOR='100', SRL='101', SRA='101', OR='110', AND='111', MUL='000',
-                   MULH='001', MULHSU='010', MULHU='011', DIV='100', DIVU='101', REM='110', REMU='111')
+FUNCT_CODES = dict(JALR='000', BEQ='000', BNE='001', BLT='100', BGE='101', BLTU='110',
+                    BGEU='111', LB='000', LH='001', LW='010', LBU='100', LHU='101', 
+                    SB='000', SH='001', SW='010', ADDI='000', SLTI='010', SLTIU='011',
+                    XORI='100', ORI='110', ANDI='111', SLLI='001', SRLI='101', SRAI='101', 
+                    ADD='000', SUB='000', SLL='001', SLT='010', SLTU='011', XOR='100', 
+                    SRL='101', SRA='101', OR='110', AND='111', MUL='000', MULH='001', 
+                    MULHSU='010', MULHU='011', DIV='100', DIVU='101', REM='110', REMU='111')
 
 REGISTERS = ['x0', 'ra', 'sp', 'gp', 'tp', 't0','t1', 't2', 's0', 's1', 'a0', 'a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7',
                  's2', 's3', 's4', 's5', 's6', 's7', 's8', 's9', 's10', 's11', 't3', 't4', 't5', 't6']
@@ -63,7 +65,7 @@ TEST_CASES_NUMBER = 0
 # Converting a 32 bit binary string instruction to a hexadecimal one
 def convert_to_hex(binary_instruction):
     # return hex(int(binary_instruction[::-1], 2))[2:]
-    return format(int(binary_instruction, 2), '08x')
+    return format(int(binary_instruction, 2), '0x')
 
 
 # Appending Instruction in corresponding lists
@@ -178,6 +180,7 @@ def generate_sb(name):
     # print('Generating SB')
     opcode_instruction = OPCODES[name]
     func_instruction = FUNCT_CODES[name]
+    
     rs1_decimal = random.choice(REGISTERS_TO_USE)
     rs1_binary = "{0:05b}".format(rs1_decimal)
     rs1_decimal = REGISTERS[rs1_decimal]
