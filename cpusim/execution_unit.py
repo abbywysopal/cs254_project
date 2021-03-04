@@ -9,7 +9,7 @@ class ExecUnit:
     def execute(self):
         instr = gv.pipeline.pipe[Stages["EXECUTE"]]
         gv.unit_statuses[Stages["EXECUTE"]] = "BUSY"
-
+        
         if instr:
             instr.evaluate_operands(self.bypassed)
             instr.execute()

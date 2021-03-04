@@ -211,3 +211,25 @@ if __name__ == '__main__':
         #binary_file.close()
         #assembly_text.write('HALT\n')
         #assembly_text.close()
+
+# XOR x : XOR R1,R1,R1
+# WRS x : WRS 6
+# WR R2
+# STORE x: STORE R2,R3,0
+# BGEZ x: BGEZ R2, L1
+# BLTZ x: BLTZ R2, L1
+# BEQZ x: BEQZ R2, L1
+# BNEZ x: BNEZ R2, L1
+# JMP (label) x: JMP L1
+# JUMP (reg) x: JUMP R1
+# IADDR R2, L1
+# LOAD x: LOAD R2,R3,0
+# LDI x: LDI R2, 20
+# ADDI x ADDI r1, r1, 100
+# SUBI x
+# MULI x
+# DIVI x
+# ADD x
+# SUB x
+# MUL x
+# DIV x

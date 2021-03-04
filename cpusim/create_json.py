@@ -13,8 +13,6 @@ def remove_commas(instruction):
 
     return final_instr
 
-
-
 if __name__ == '__main__':
 
     path = sys.argv[1]
@@ -44,6 +42,7 @@ if __name__ == '__main__':
 
             output_file = open(output_filename)
             ml_data["cycles"] = int(output_file.readline())
+            # print(ml_data["cycles"])
             list = []
             list.append(ml_data)
             

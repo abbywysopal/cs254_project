@@ -74,6 +74,7 @@ class Computor:
         output_file.write(str(self.clock_cnt))
 
     def run_pipelined(self, filename, path):
+        # debug = True
         if debug:
             print("RUNNING PIPELINED")
         last_instr = getNOP()
@@ -92,7 +93,9 @@ class Computor:
             if debug:
                 print("After execute:", str(gv.pipeline), "clk", self.clock_cnt)
 
-            self.decodeunit.decode()
+            hazard = self.decodeunit.decode()
+            if hazard == True:
+                self.clock_cnt += 2
             if debug:
                 print("After decode:", str(gv.pipeline), "clk", self.clock_cnt)
 
@@ -180,11 +183,13 @@ def main(path):
         assemble(asm, program)
 
         gv.pipeline = Pipeline()
-        pc3000 = Computor(program)
-
+        gv.enable_forwarding = True
         gv.is_pipelined = True
+
+        pc3000 = Computor(program)
         # _thread.start_new_thread(pc3000.run_pipelined,(filename,path))
         pc3000.run_pipelined(filename,path)
+        # pc3000.run_non_pipelined(filename,path)
 
     # if debug:
     # print_data_mem()

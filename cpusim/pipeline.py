@@ -46,8 +46,8 @@ class Pipeline:
             return 0
 
     def push(self, instr):
-        if self.pipe[0]:
-            print("slot 0 not empty", self.pipe[0])
-        else:
-            self.pipe[0] = instr
+        # if self.pipe[0]:
+        #     print("slot 0 not empty", self.pipe[0])
+        # else:
+        self.pipe[0] = instr
 

@@ -22,3 +22,5 @@ os.system('python cpusim/cpusim.py cpusim/tests/data/test/')
 os.system('python cpusim/create_json.py cpusim/tests/data/test/')
 # os.system('python cpusim/create_json.py cpusim/tests/data/train/')
 # os.system('python cpusim/create_json.py cpusim/tests/data/valid/')
+
+os.system('python cpusim/tokenize.py cpusim/tests/data/test/')

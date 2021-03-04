@@ -187,7 +187,7 @@ class STOREInstruction(Instruction):
         if(load_index < 0):
             load_index *= -1
             
-        while(load_index > MEM_SIZE):
+        while(load_index > MEM_SIZE - 3):
             load_index = int(load_index/10)
 
         gv.data_mem[load_index + 0] = a
@@ -214,7 +214,7 @@ class LOADInstruction(WRITEBACKInstruction):
         if(load_index < 0):
             load_index *= -1
             
-        while(load_index > MEM_SIZE):
+        while(load_index > MEM_SIZE - 3):
             load_index = int(load_index/10)
 
         # if(load_index * -1 > MEM_SIZE):
