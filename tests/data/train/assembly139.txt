@@ -1,5 +1,0 @@
-L1:
-BGEZ R15,L2
-WR R26
-L2:
-HALT

@@ -1,5 +1,0 @@
-L1:
-L2:
-IADDR R22,L3
-L3:
-HALT

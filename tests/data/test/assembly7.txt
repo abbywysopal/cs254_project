@@ -1,6 +1,0 @@
-L1:
-L2:
-BLTZ R6,L3
-JUMP R15
-L3:
-HALT

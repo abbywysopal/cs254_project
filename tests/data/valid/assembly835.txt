@@ -1,5 +1,0 @@
-L1:
-JMP L2
-DIV R18,R7,R17
-L2:
-HALT

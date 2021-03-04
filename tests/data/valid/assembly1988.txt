@@ -1,5 +1,0 @@
-L1:
-BNEZ R34,L2
-WR R15
-L2:
-HALT

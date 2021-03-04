@@ -1,4 +1,0 @@
-L1:
-SUB R5,R13,R0
-L2:
-HALT

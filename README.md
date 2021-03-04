@@ -2,4 +2,4 @@
 
 $ python3 run.py
 
-generates assembly code, runs it through a simulator, and creates a json file with data.
+generates 10 basic block assembly files with 32 instrcutions in each, runs each assembly file in "tests/data" through the pipeline, creates json with data
