@@ -31,28 +31,25 @@ for filename in test_filenames:
         data = json.load(json_file)
         dataset.append(data)
 
-instructions = []
-labels = []
-xmls = []
+# instructions = []
+# labels = []
+# xmls = []
 nmaps = []
 targets = []
 
 for item in dataset: 
-    target = int(item['total_cycles'])
-    label = item['instr_cycle']
-
-    instructions.append(item['instr'])
-    labels.append(label)
-    xmls.append(item['xml'])
+    # instructions.append(item['instr'])
+    # xmls.append(item['xml'])
     nmaps.append(item['nmap'])
-    targets.append(target)
+    targets.append(int(item['total_cycles']))
+    # labels.append(item['instr_cycle'])
 
 TRAINING_SIZE = int((len(dataset)) * .8)
 
 training_instructions = nmaps[0:TRAINING_SIZE]
 testing_instructions = nmaps[TRAINING_SIZE:]
-training_labels = labels[0:TRAINING_SIZE]
-testing_labels = labels[TRAINING_SIZE:]
+# training_labels = labels[0:TRAINING_SIZE]
+# testing_labels = labels[TRAINING_SIZE:]
 training_targets = targets[0:TRAINING_SIZE]
 testing_targets = targets[TRAINING_SIZE:]
 
@@ -62,9 +59,9 @@ testing_sequences = testing_instructions
 testing_padded = pad_sequences(testing_sequences, maxlen=max_length, padding=padding_type)
 
 training_padded = np.array(training_padded)
-training_labels = np.array(training_labels)
 testing_padded = np.array(testing_padded)
-testing_labels = np.array(testing_labels)
+# training_labels = np.array(training_labels)
+# testing_labels = np.array(testing_labels)
 training_targets = np.array(training_targets)
 testing_targets = np.array(testing_targets)
 
@@ -81,6 +78,7 @@ epochs = 10
 
 history = model.fit(training_padded, training_targets, 
 epochs=epochs, validation_data=(testing_padded, testing_targets), verbose=2)
+
 pred = model.predict(testing_padded)
 
 correct = 0
@@ -95,4 +93,17 @@ for i in range(len(pred)):
 
 print("num correct:", correct)
 print("out of:", len(pred))
-    # print(np.matmul())
+
+pred = model.predict(training_padded)
+correct = 0
+for i in range(len(pred)):
+    # print(sum(pred[i]) * 10)
+    # print(testing_targets[i])
+    # print("pred:", pred[i])
+    # print("pred round:", round(sum(pred[i]) * 10))
+    # print("target:", testing_targets[i])
+    if(round(sum(pred[i]) * 10) == testing_targets[i]):
+        correct += 1
+
+print("num correct:", correct)
+print("out of:", len(pred))

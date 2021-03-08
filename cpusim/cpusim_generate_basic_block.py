@@ -232,44 +232,20 @@ if __name__ == '__main__':
         # Writing and formatting ouput files
         assembly_file = open(path + "assembly" + str(test_case + 1) + ".ass", "w")
         # assembly_text = open(path + "assembly" + str(test_case + 1) + ".txt", "w")
-        binary_file = open(path + "binary" + str(test_case + 1) + ".txt", "w")
-        hex_file = open(path + "hex" + str(test_case + 1) + ".v", "w")
+        #binary_file = open(path + "binary" + str(test_case + 1) + ".txt", "w")
+        #hex_file = open(path + "hex" + str(test_case + 1) + ".v", "w")
 
         for i in range(Instructions_Number):
             assembly_file.write(instructions_list_assembly[i] + "\n")
-            binary_file.write("0b" + instructions_list_binary[i] + "\n")
-            hex_file.write("0x" + instructions_list_hex[i] + "\n")
+            #binary_file.write("0b" + instructions_list_binary[i] + "\n")
+            #hex_file.write("0x" + instructions_list_hex[i] + "\n")
             #assembly_text.write(instructions_list_assembly[i] + "\n")
     
         bin = "00000000000000000000000000110000"
-        binary_file.write("0b" + bin)
+        #binary_file.write("0b" + bin)
 
         assembly_file.write('HALT\n')
-        hex_file.write("0x00000030")
+        #hex_file.write("0x00000030")
         assembly_file.close()
-        binary_file.close()
-        hex_file.close()
-        #assembly_text.write('HALT\n')
-        #assembly_text.close()
-
-# XOR x : XOR R1,R1,R1
-# WRS x : WRS 6
-# WR R2
-# STORE x: STORE R2,R3,0
-# BGEZ x: BGEZ R2, L1
-# BLTZ x: BLTZ R2, L1
-# BEQZ x: BEQZ R2, L1
-# BNEZ x: BNEZ R2, L1
-# JMP (label) x: JMP L1
-# JUMP (reg) x: JUMP R1
-# IADDR R2, L1
-# LOAD x: LOAD R2,R3,0
-# LDI x: LDI R2, 20
-# ADDI x ADDI r1, r1, 100
-# SUBI x
-# MULI x
-# DIVI x
-# ADD x
-# SUB x
-# MUL x
-# DIV x
+        #binary_file.close()
+        #hex_file.close()
