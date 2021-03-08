@@ -4,6 +4,7 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 # from tensorflow_core.python.keras.utils.data_utils import Sequence
 from tensorflow.keras.utils import Sequence
+from tensorflow.keras.activations import *
 
 import json
 import glob
@@ -25,7 +26,6 @@ padding_type='post'
 
 dataset = []
 test_filenames = glob.glob('./cpusim/tests/data/test/json/*')
-# print(test_filenames)
 for filename in test_filenames:
     with open(filename, 'r') as json_file:
         data = json.load(json_file)
@@ -34,57 +34,65 @@ for filename in test_filenames:
 instructions = []
 labels = []
 xmls = []
+nmaps = []
+targets = []
 
-for item in dataset:
+for item in dataset: 
+    target = int(item['total_cycles'])
+    label = item['instr_cycle']
+
     instructions.append(item['instr'])
-    labels.append(item['cycles'])
+    labels.append(label)
     xmls.append(item['xml'])
-
+    nmaps.append(item['nmap'])
+    targets.append(target)
 
 TRAINING_SIZE = int((len(dataset)) * .8)
 
-training_instructions = instructions[0:TRAINING_SIZE]
-testing_instructions = instructions[TRAINING_SIZE:]
+training_instructions = nmaps[0:TRAINING_SIZE]
+testing_instructions = nmaps[TRAINING_SIZE:]
 training_labels = labels[0:TRAINING_SIZE]
 testing_labels = labels[TRAINING_SIZE:]
+training_targets = targets[0:TRAINING_SIZE]
+testing_targets = targets[TRAINING_SIZE:]
 
-tokenizer = Tokenizer(oov_token="<OOV>")
-tokenizer.fit_on_texts(training_instructions)
-word_index = tokenizer.word_index
-
-training_sequences = tokenizer.texts_to_sequences(training_instructions)
+training_sequences = training_instructions
 training_padded = pad_sequences(training_sequences, maxlen=max_length, padding=padding_type)
-testing_sequences = tokenizer.texts_to_sequences(testing_instructions)
+testing_sequences = testing_instructions
 testing_padded = pad_sequences(testing_sequences, maxlen=max_length, padding=padding_type)
-
-print("training_padded.shape:", training_padded.shape)
-# print(training_sequences.shape)
 
 training_padded = np.array(training_padded)
 training_labels = np.array(training_labels)
 testing_padded = np.array(testing_padded)
 testing_labels = np.array(testing_labels)
-
-# training_padded = np.reshape(training_padded, (training_padded.shape[0], 1, training_padded.shape[1]))
-# testing_padded = np.reshape(testing_padded, (testing_padded.shape[0], 1, testing_padded.shape[1]))
-
+training_targets = np.array(training_targets)
+testing_targets = np.array(testing_targets)
 
 model = tf.keras.Sequential([
     tf.keras.layers.Embedding(vocab_size, embedding_dim, input_length=max_length),
-    tf.keras.layers.LSTM(64), #input_shape=(1,1,4)
-    tf.keras.layers.Dense(64, activation='relu'),
-    tf.keras.layers.Dense(1, activation='sigmoid')
+    tf.keras.layers.LSTM(64, return_sequences=True), #input_shape=(1,1,4)
+    # tf.keras.layers.Dense(32, kernel_initializer='lecun_normal', activation='selu'),
+    tf.keras.layers.LSTM(32),
+    tf.keras.layers.Dense(1, kernel_initializer='lecun_normal', activation='selu')
 ])
 
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-# model.build()
-model.summary()
+epochs = 10
 
-epochs = TRAINING_SIZE
+history = model.fit(training_padded, training_targets, 
+epochs=epochs, validation_data=(testing_padded, testing_targets), verbose=2)
+pred = model.predict(testing_padded)
 
-print(training_sequences)
+correct = 0
+for i in range(len(pred)):
+    # print(sum(pred[i]) * 10)
+    # print(testing_targets[i])
+    # print("pred:", pred[i])
+    # print("pred round:", round(sum(pred[i]) * 10))
+    # print("target:", testing_targets[i])
+    if(round(sum(pred[i]) * 10) == testing_targets[i]):
+        correct += 1
 
-history = model.fit(training_padded, training_labels, 
-epochs=epochs, validation_data=(testing_padded, testing_labels), verbose=2)
-    
-print(history)
+print("num correct:", correct)
+print("out of:", len(pred))
+    # print(np.matmul())
