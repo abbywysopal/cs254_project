@@ -57,7 +57,7 @@ funct 7         rs2            rs1         funct3        rd            opcode
 (31,25)=7     (24, 20)=5    (19,15)=5      (14, 12)=3    (11, 7)=5     (6,0)=7
 '''
 def generate_r(name):
-    # print('Generating R')
+    # #print('Generating R')
     opcode_instruction = OPCODES[name]
     func_instruction = FUNCT_CODES[name]
 
@@ -76,19 +76,19 @@ def generate_r(name):
     instruction_binary = FUNCT7[name] + rs2_binary + rs1_binary + FUNCT3[name] + rd_binary + opcode_instruction
 
     add_instructions(instruction_assembly, instruction_binary, convert_to_hex(instruction_binary))
-    if(len(instruction_binary) > 32):
-        print(instruction_binary, str(len(instruction_binary)))
-        print("TOOO BIG R-type")
-        print(str(len(FUNCT7[name])), str(len(rs2_binary)), str(len(rs1_binary)), str(len(FUNCT3[name])), str(len(rd_binary)), str(len(opcode_instruction)))
+    # if(len(instruction_binary) > 32):
+        #print(instruction_binary, str(len(instruction_binary)))
+        #print("TOOO BIG R-type")
+        #print(str(len(FUNCT7[name])), str(len(rs2_binary)), str(len(rs1_binary)), str(len(FUNCT3[name])), str(len(rd_binary)), str(len(opcode_instruction)))
 
 # ADDI x ADDI r1, r1, 100
 # Function to generate an I-Type instruction
 '''
-imm          rs1         funct3      rd          opcode
-(32,20)     (19,15)     (14, 12)    (11, 7)     (6,0)
+    imm          rs1         funct3      rd          opcode
+    (32,20)     (19,15)     (14, 12)    (11, 7)     (6,0)
 '''
 def generate_i(name):
-    # print('Generating I')
+    # #print('Generating I')
     opcode_instruction = OPCODES[name]
     func_instruction = FUNCT_CODES[name]
 
@@ -108,10 +108,10 @@ def generate_i(name):
         instruction_assembly = name + " R" + str(rd_decimal) + "," + str(imm_decimal)
         imm_binary = "{0:020b}".format(imm_decimal)
         instruction_binary = imm_binary + rd_binary + opcode_instruction
-        if(len(instruction_binary) > 32):
-            print(instruction_binary, str(len(instruction_binary)))
-            print("TOOO BIG I-type")
-            print(str(len(imm_binary)), str(len(rd_binary)), str(len(opcode_instruction)))
+        # if(len(instruction_binary) > 32):
+            #print(instruction_binary, str(len(instruction_binary)))
+            #print("TOOO BIG I-type")
+            #print(str(len(imm_binary)), str(len(rd_binary)), str(len(opcode_instruction)))
 
     else:
         imm_decimal = np.random.randint(0, 480)
@@ -121,10 +121,10 @@ def generate_i(name):
     
         imm_binary = "{0:012b}".format(imm_decimal)
         instruction_binary = imm_binary + rs1_binary + FUNCT3[name] + rd_binary + opcode_instruction
-        if(len(instruction_binary) > 32):
-            print(instruction_binary, str(len(instruction_binary)))
-            print("TOOO BIG I-type")
-            print(str(len(imm_binary)), str(len(rs1_binary)), str(len(FUNCT3[name])), str(len(opcode_instruction)))
+        # if(len(instruction_binary) > 32):
+            #print(instruction_binary, str(len(instruction_binary)))
+            #print("TOOO BIG I-type")
+            #print(str(len(imm_binary)), str(len(rs1_binary)), str(len(FUNCT3[name])), str(len(opcode_instruction)))
 
     add_instructions(instruction_assembly, instruction_binary, convert_to_hex(instruction_binary))
 
@@ -136,7 +136,7 @@ imm         rd         opcode
 (31,12)    (11, 7)     (6,0)
 '''
 def generate_u(name):
-    # print('Generating U')
+    # #print('Generating U')
     opcode_instruction = OPCODES[name]
     rd_decimal = random.choice(REGISTERS_TO_USE)
     rd_binary = "{0:05b}".format(rd_decimal)
@@ -153,10 +153,10 @@ def generate_u(name):
         
     instruction_binary = imm_binary + rd_binary + opcode_instruction
     add_instructions(instruction_assembly, instruction_binary, convert_to_hex(instruction_binary))
-    if(len(instruction_binary) > 32):
-        print(instruction_binary, str(len(instruction_binary)))
-        print("TOOO BIG U-type")
-        print(str(len(imm_binary)), str(len(rd_binary)), str(len(opcode_instruction)))
+    # if(len(instruction_binary) > 32):
+        #print(instruction_binary, str(len(instruction_binary)))
+        #print("TOOO BIG U-type")
+        #print(str(len(imm_binary)), str(len(rd_binary)), str(len(opcode_instruction)))
 
 
 # Instruction generation wrapper
@@ -206,8 +206,8 @@ if __name__ == '__main__':
         # Initializing all variables
         REGISTERS_NUMBER = 32
         # Instructions_Number = 15
-        # Instructions_Number = random.randint(1,29)
-        Instructions_Number = 31
+        Instructions_Number = random.randint(1,31)
+        # Instructions_Number = 31
         INSTRUCTION_CURRENT = 0
         STORED_MEMORY_LOCATIONS = []
         instructions_list_assembly = []

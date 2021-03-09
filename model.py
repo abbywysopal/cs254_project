@@ -6,6 +6,7 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.utils import Sequence
 from tensorflow.keras.activations import *
 
+import joblib
 import json
 import glob
 import numpy as np
@@ -18,92 +19,110 @@ import numpy as np
 #                 "BNEZ R2,L3",
 # ]
 
-vocab_size = 10000
-embedding_dim = 16
+def create_dataset(path):
+    dataset = []
+    test_filenames = glob.glob(path + '*')
+    for filename in test_filenames:
+        with open(filename, 'r') as json_file:
+            data = json.load(json_file)
+            dataset.append(data)
+
+    # instructions = []
+    # xmls = []
+    nmaps = []
+    targets = []
+
+    for item in dataset: 
+        # instructions.append(item['instr'])
+        # xmls.append(item['xml'])
+        nmaps.append(item['nmap'])
+        # targets.append(int(item['total_cycles']))
+
+        # could train with cycle time per instruction
+        targets.append(np.asarray(item['instr_cycle']))
+
+    return nmaps, targets
+
+def pre_processing(instructions, targets, max_length = 4):
+    trunc_type='post'
+    padding_type='post'
+    TRAINING_SIZE = int((len(instructions)) * .8)
+
+    training_instructions = instructions[0:TRAINING_SIZE]
+    testing_instructions = instructions[TRAINING_SIZE:]
+
+    training_targets = targets[0:TRAINING_SIZE]
+    testing_targets = targets[TRAINING_SIZE:]
+    training_targets = np.array(training_targets)
+    testing_targets = np.array(testing_targets)
+
+    training_padded = pad_sequences(training_instructions, maxlen=max_length, padding=padding_type)
+    training_padded = np.array(training_padded)
+    testing_padded = pad_sequences(testing_instructions, maxlen=max_length, padding=padding_type)
+    testing_padded = np.array(testing_padded)
+
+    print("train targets", training_targets)
+    print("test targets:", testing_targets)
+
+    return training_padded, training_targets, testing_padded, testing_targets
+
+
+def create_and_train_model(training_padded, training_targets, testing_padded, testing_targets, epochs=10, max_length=4):
+    vocab_size = 10000
+    embedding_dim = 16
+
+    model = tf.keras.Sequential([
+        tf.keras.layers.Embedding(vocab_size, embedding_dim, input_length=max_length),
+        tf.keras.layers.LSTM(64, return_sequences=True), #input_shape=(1,1,4)
+        tf.keras.layers.Dense(32, activation='softsign'),
+        tf.keras.layers.LSTM(32),
+        tf.keras.layers.Dense(1, activation='selu')
+    ])
+
+    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+    history = model.fit(training_padded, training_targets, 
+    epochs=epochs, validation_data=(testing_padded, testing_targets), verbose=2, shuffle=True)
+
+    return model
+
 max_length = 4
-trunc_type='post'
-padding_type='post'
+nmaps, targets = create_dataset('./cpusim/tests/data/test/json/')
+training_padded, training_targets, testing_padded, testing_targets = pre_processing(nmaps, targets, max_length)
 
-dataset = []
-test_filenames = glob.glob('./cpusim/tests/data/test/json/*')
-for filename in test_filenames:
-    with open(filename, 'r') as json_file:
-        data = json.load(json_file)
-        dataset.append(data)
+trained_model = create_and_train_model(training_padded=training_padded, training_targets=training_targets, 
+        testing_padded=testing_padded, testing_targets=testing_targets, epochs=10, max_length=max_length)
 
-# instructions = []
-# labels = []
-# xmls = []
-nmaps = []
-targets = []
+# ten_correct = 0 
+# epochs = 23
+# square_correct = 0
+# min_correct = len(training_targets)/10
+# scalar = 0
+# while (square_correct < min_correct):
+#     trained_model = create_and_train_model(training_padded=training_padded, training_targets=training_targets, 
+#         testing_padded=testing_padded, testing_targets=testing_targets, epochs=epochs, max_length=max_length)
 
-for item in dataset: 
-    # instructions.append(item['instr'])
-    # xmls.append(item['xml'])
-    nmaps.append(item['nmap'])
-    targets.append(int(item['total_cycles']))
-    # labels.append(item['instr_cycle'])
+#     epochs += 1
+#     pred = trained_model.predict(training_padded)
+#     ten_correct = 0
+#     square_correct = 0
+#     for i in range(len(pred)):
+#         print("pred:", pred[i])
+#         print("target:", training_targets[i])
+#         # print(training_targets[i]/pred[i])
+#         scalar += training_targets[i]/pred[i]
 
-TRAINING_SIZE = int((len(dataset)) * .8)
+#         if(round(sum(pred[i]) * 10) == training_targets[i]):
+#             ten_correct += 1
 
-training_instructions = nmaps[0:TRAINING_SIZE]
-testing_instructions = nmaps[TRAINING_SIZE:]
-# training_labels = labels[0:TRAINING_SIZE]
-# testing_labels = labels[TRAINING_SIZE:]
-training_targets = targets[0:TRAINING_SIZE]
-testing_targets = targets[TRAINING_SIZE:]
+#         if(round(sum(pred[i] * pred[i])) == training_targets[i]):
+#             square_correct += 1
 
-training_sequences = training_instructions
-training_padded = pad_sequences(training_sequences, maxlen=max_length, padding=padding_type)
-testing_sequences = testing_instructions
-testing_padded = pad_sequences(testing_sequences, maxlen=max_length, padding=padding_type)
+#     print("ten correct:", ten_correct)
+#     print("square correct:", square_correct)
+#     print("out of:", len(pred))
+#     print("scalar:", scalar/len(pred))
+#     scalar = 0
 
-training_padded = np.array(training_padded)
-testing_padded = np.array(testing_padded)
-# training_labels = np.array(training_labels)
-# testing_labels = np.array(testing_labels)
-training_targets = np.array(training_targets)
-testing_targets = np.array(testing_targets)
-
-model = tf.keras.Sequential([
-    tf.keras.layers.Embedding(vocab_size, embedding_dim, input_length=max_length),
-    tf.keras.layers.LSTM(64, return_sequences=True), #input_shape=(1,1,4)
-    # tf.keras.layers.Dense(32, kernel_initializer='lecun_normal', activation='selu'),
-    tf.keras.layers.LSTM(32),
-    tf.keras.layers.Dense(1, kernel_initializer='lecun_normal', activation='selu')
-])
-
-model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-epochs = 10
-
-history = model.fit(training_padded, training_targets, 
-epochs=epochs, validation_data=(testing_padded, testing_targets), verbose=2)
-
-pred = model.predict(testing_padded)
-
-correct = 0
-for i in range(len(pred)):
-    # print(sum(pred[i]) * 10)
-    # print(testing_targets[i])
-    # print("pred:", pred[i])
-    # print("pred round:", round(sum(pred[i]) * 10))
-    # print("target:", testing_targets[i])
-    if(round(sum(pred[i]) * 10) == testing_targets[i]):
-        correct += 1
-
-print("num correct:", correct)
-print("out of:", len(pred))
-
-pred = model.predict(training_padded)
-correct = 0
-for i in range(len(pred)):
-    # print(sum(pred[i]) * 10)
-    # print(testing_targets[i])
-    # print("pred:", pred[i])
-    # print("pred round:", round(sum(pred[i]) * 10))
-    # print("target:", testing_targets[i])
-    if(round(sum(pred[i]) * 10) == testing_targets[i]):
-        correct += 1
-
-print("num correct:", correct)
-print("out of:", len(pred))
+# # save the model to disk
+# trained_model.save('trained_model.h5')

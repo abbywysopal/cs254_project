@@ -27,6 +27,8 @@ if __name__ == '__main__':
             index = 0
             ml_data = dict()
             ml_data["instr"] = []
+            ml_data["instr_cycle"] = []
+            ml_data["total_cycles"] = 0
 
             for line in file.readlines():
                 line = line[:-1]
@@ -36,13 +38,29 @@ if __name__ == '__main__':
                 # ml_data[index] = line
                 index += 1
 
-            while index < 32:
-                ml_data["instr"].append("")
-                index += 1
+            # while index < 32:
+            #     ml_data["instr"].append("")
+            #     index += 1
 
             output_file = open(output_filename)
-            ml_data["cycles"] = int(output_file.readline())
-            # print(ml_data["cycles"])
+            last_cycle = 0
+            index = 0
+            for line in output_file.readlines():
+                count = int(line)
+                if last_cycle != 0:
+                    count -= last_cycle
+                ml_data["instr_cycle"].append(count)
+                ml_data["total_cycles"] = int(line)
+                last_cycle = int(line)
+                index += 1
+
+            while index <= 32:
+                ml_data["instr_cycle"].append(0)
+                index += 1
+            
+            
+            ml_data["instr_cycle"].pop()
+
             list = []
             list.append(ml_data)
             
@@ -53,5 +71,6 @@ if __name__ == '__main__':
                 outfile.write(']')
 
             data += 1
-        else:
-            os.remove(filename)
+
+            os.remove(output_filename)
+        os.remove(filename)
