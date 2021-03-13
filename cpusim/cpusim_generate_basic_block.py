@@ -19,37 +19,11 @@ def reverse_dict_with_iterable(dictionary):
 
 # Converting a 32 bit binary string instruction to a hexadecimal one
 def convert_to_hex(binary_instruction):
-    # return hex(int(binary_instruction[::-1], 2))[2:]
     return format(int(binary_instruction, 2), '08x')
 
-# XOR x : XOR R1,R1,R1
-# WRS x : WRS 6
-# WR R2
-# STORE x: STORE R2,R3,0
-# BGEZ x: BGEZ R2, L1
-# BLTZ x: BLTZ R2, L1
-# BEQZ x: BEQZ R2, L1
-# BNEZ x: BNEZ R2, L1
-# JMP (label) x: JMP L1
-# JUMP (reg) x: JUMP R1
-# IADDR R2, L1
-# LOAD x: LOAD R2,R3,0
-# LDI x: LDI R2, 20
-# ADDI x ADDI r1, r1, 100
-# SUBI x
-# MULI x
-# DIVI x
-# ADD x
-# SUB x
-# MUL x
-# DIV x
-
-
 # Appending Instruction in corresponding lists
-def add_instructions(assembly, binary, hex):
+def add_instructions(assembly):
     instructions_list_assembly.append(assembly)
-    instructions_list_binary.append(binary)
-    instructions_list_hex.append(hex)
 
 # Function to generate an R-Type instruction
 '''
@@ -75,11 +49,7 @@ def generate_r(name):
 
     instruction_binary = FUNCT7[name] + rs2_binary + rs1_binary + FUNCT3[name] + rd_binary + opcode_instruction
 
-    add_instructions(instruction_assembly, instruction_binary, convert_to_hex(instruction_binary))
-    # if(len(instruction_binary) > 32):
-        #print(instruction_binary, str(len(instruction_binary)))
-        #print("TOOO BIG R-type")
-        #print(str(len(FUNCT7[name])), str(len(rs2_binary)), str(len(rs1_binary)), str(len(FUNCT3[name])), str(len(rd_binary)), str(len(opcode_instruction)))
+    add_instructions(instruction_assembly)
 
 # ADDI x ADDI r1, r1, 100
 # Function to generate an I-Type instruction
@@ -108,25 +78,16 @@ def generate_i(name):
         instruction_assembly = name + " R" + str(rd_decimal) + "," + str(imm_decimal)
         imm_binary = "{0:020b}".format(imm_decimal)
         instruction_binary = imm_binary + rd_binary + opcode_instruction
-        # if(len(instruction_binary) > 32):
-            #print(instruction_binary, str(len(instruction_binary)))
-            #print("TOOO BIG I-type")
-            #print(str(len(imm_binary)), str(len(rd_binary)), str(len(opcode_instruction)))
 
     else:
         imm_decimal = np.random.randint(0, 480)
-        # imm_decimal = 0
         instruction_assembly = name + " R" + str(rd_decimal) + ",R" + str(rs1_decimal) + "," + str(
             imm_decimal)
     
         imm_binary = "{0:012b}".format(imm_decimal)
         instruction_binary = imm_binary + rs1_binary + FUNCT3[name] + rd_binary + opcode_instruction
-        # if(len(instruction_binary) > 32):
-            #print(instruction_binary, str(len(instruction_binary)))
-            #print("TOOO BIG I-type")
-            #print(str(len(imm_binary)), str(len(rs1_binary)), str(len(FUNCT3[name])), str(len(opcode_instruction)))
 
-    add_instructions(instruction_assembly, instruction_binary, convert_to_hex(instruction_binary))
+    add_instructions(instruction_assembly)
 
 # Function to generate a U-Type instruction
 # WRS 6
@@ -152,11 +113,7 @@ def generate_u(name):
         instruction_assembly = name + " R" + str(rd_decimal)
         
     instruction_binary = imm_binary + rd_binary + opcode_instruction
-    add_instructions(instruction_assembly, instruction_binary, convert_to_hex(instruction_binary))
-    # if(len(instruction_binary) > 32):
-        #print(instruction_binary, str(len(instruction_binary)))
-        #print("TOOO BIG U-type")
-        #print(str(len(imm_binary)), str(len(rd_binary)), str(len(opcode_instruction)))
+    add_instructions(instruction_assembly)
 
 
 # Instruction generation wrapper
@@ -205,14 +162,10 @@ if __name__ == '__main__':
     for test_case in range(int(TEST_CASES_NUMBER)):
         # Initializing all variables
         REGISTERS_NUMBER = 32
-        # Instructions_Number = 15
         Instructions_Number = random.randint(1,31)
-        # Instructions_Number = 31
         INSTRUCTION_CURRENT = 0
         STORED_MEMORY_LOCATIONS = []
         instructions_list_assembly = []
-        instructions_list_binary = []
-        instructions_list_hex = []
 
         # Random Registers to use
         REGISTERS_TO_USE = np.random.randint(0, 31, int(REGISTERS_NUMBER))
@@ -231,21 +184,9 @@ if __name__ == '__main__':
 
         # Writing and formatting ouput files
         assembly_file = open(path + "assembly" + str(test_case + 1) + ".ass", "w")
-        # assembly_text = open(path + "assembly" + str(test_case + 1) + ".txt", "w")
-        #binary_file = open(path + "binary" + str(test_case + 1) + ".txt", "w")
-        #hex_file = open(path + "hex" + str(test_case + 1) + ".v", "w")
 
         for i in range(Instructions_Number):
             assembly_file.write(instructions_list_assembly[i] + "\n")
-            #binary_file.write("0b" + instructions_list_binary[i] + "\n")
-            #hex_file.write("0x" + instructions_list_hex[i] + "\n")
-            #assembly_text.write(instructions_list_assembly[i] + "\n")
-    
-        bin = "00000000000000000000000000110000"
-        #binary_file.write("0b" + bin)
 
         assembly_file.write('HALT\n')
-        #hex_file.write("0x00000030")
         assembly_file.close()
-        #binary_file.close()
-        #hex_file.close()

@@ -32,15 +32,8 @@ if __name__ == '__main__':
 
             for line in file.readlines():
                 line = line[:-1]
-                #remove ','
-                # print(remove_commas(line))
                 ml_data["instr"].append(remove_commas(line))
-                # ml_data[index] = line
                 index += 1
-
-            # while index < 32:
-            #     ml_data["instr"].append("")
-            #     index += 1
 
             output_file = open(output_filename)
             last_cycle = 0
@@ -57,7 +50,6 @@ if __name__ == '__main__':
             while index <= 32:
                 ml_data["instr_cycle"].append(0)
                 index += 1
-            
             
             ml_data["instr_cycle"].pop()
 

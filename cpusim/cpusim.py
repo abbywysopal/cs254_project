@@ -28,6 +28,7 @@ class Computor:
         self.clock_cnt = 0
 
     def run_non_pipelined(self, filename):
+        debug = False
         if debug:
             print("RUNNING NON-PIPELINED")
         last_instr = getNOP()
@@ -74,6 +75,8 @@ class Computor:
         output_file.write(str(self.clock_cnt))
 
     def run_pipelined(self, filename, path):
+        debug = False
+        cycles = []
         # debug = True
         if debug:
             print("RUNNING PIPELINED")
@@ -85,13 +88,9 @@ class Computor:
                 print("\n\nSTART")
                 print("Before anything:", str(gv.pipeline), "clk", self.clock_cnt)
 
-            last_instr = self.wbunit.writeback()
+            self.fetchunit.fetch(1)
             if debug:
-                print("After writeback:", str(gv.pipeline), "clk", self.clock_cnt)
-
-            self.execunit.execute()
-            if debug:
-                print("After execute:", str(gv.pipeline), "clk", self.clock_cnt)
+                print("After fetch:", str(gv.pipeline), "clk", self.clock_cnt)
 
             hazard = self.decodeunit.decode()
             if hazard == True:
@@ -99,10 +98,16 @@ class Computor:
             if debug:
                 print("After decode:", str(gv.pipeline), "clk", self.clock_cnt)
 
-
-            self.fetchunit.fetch(1)
+            self.execunit.execute()
             if debug:
-                print("After fetch:", str(gv.pipeline), "clk", self.clock_cnt)
+                print("After execute:", str(gv.pipeline), "clk", self.clock_cnt)
+
+            last_instr = self.wbunit.writeback()
+            if(last_instr is not None):
+                cycles.append(str(self.clock_cnt))
+                
+            if debug:
+                print("After writeback:", str(gv.pipeline), "clk", self.clock_cnt)
 
             gv.pipeline.advance()
 
@@ -110,10 +115,11 @@ class Computor:
                 print("END")
         #
         # if debug:
+        cycles.append(str(self.clock_cnt))
         output_filename = path + "output_assembly" + filename[filename.index("y") + 1 :filename.index(".")] + ".txt"
-        output_file = open(output_filename, 'w')
-        output_file.write(str(self.clock_cnt))
-
+        with open(output_filename, 'w') as output_file:
+            for item in cycles:
+                output_file.write(str(item) + "\n")
 
 def assemble(asm, program):
     label_targets = {}

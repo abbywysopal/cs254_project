@@ -11,7 +11,7 @@ def get_instruction(line):
     try:
         i = instruction_types[opcode](line)
     except KeyError:
-        print("Unrecognised instruction", line)
+        #print("Unrecognised instruction", line)
         i = ""
 
     return i
@@ -49,6 +49,7 @@ class Instruction:
         pass
 
     def evaluate_operands(self, bypass):
+        debug = False
         if debug:
             print("-" * 30)
         try:
@@ -62,6 +63,7 @@ class Instruction:
         self.operand_vals = []
 
         for idx, src in enumerate(self.src):
+            debug = False
             if debug:
                 print(idx, ".src", src)
             try:
@@ -133,7 +135,7 @@ class CONDBRANCHInstruction(BRANCHInstruction):
 
 class WRITEBACKInstruction(Instruction):
     def writeback(self):
-
+        debug = False
         if debug:
             print("WRITING", str(self))
             print(self.dest)
@@ -179,15 +181,15 @@ class STOREInstruction(Instruction):
         c = (self.operand_vals[0] >> 16) & 0xFF
         d = (self.operand_vals[0] >> 24) & 0xFF
 
-        # print("OPS", self.operand_vals)
-        # print(self.operand_vals[1] + self.operand_vals[2] + 0)
-        # print(len(gv.data_mem))
+        # #print("OPS", self.operand_vals)
+        # #print(self.operand_vals[1] + self.operand_vals[2] + 0)
+        # #print(len(gv.data_mem))
 
         load_index = self.operand_vals[1] + self.operand_vals[2] + 0
         if(load_index < 0):
             load_index *= -1
             
-        while(load_index > MEM_SIZE - 3):
+        while(load_index >= MEM_SIZE - 3):
             load_index = int(load_index/10)
 
         gv.data_mem[load_index + 0] = a
@@ -204,17 +206,17 @@ class LOADInstruction(WRITEBACKInstruction):
 
     def execute(self):
         self.result = 0
-        # print("LEN", len(gv.data_mem))
-        # print("OPS",self.operand_vals)
-        # print("0", self.operand_vals[0])
-        # print("1", self.operand_vals[1])
-        # print(self.operand_vals[0] + self.operand_vals[1] + 0)
+        # #print("LEN", len(gv.data_mem))
+        # #print("OPS",self.operand_vals)
+        # #print("0", self.operand_vals[0])
+        # #print("1", self.operand_vals[1])
+        # #print(self.operand_vals[0] + self.operand_vals[1] + 0)
 
         load_index = self.operand_vals[0] + self.operand_vals[1] + 0
         if(load_index < 0):
             load_index *= -1
             
-        while(load_index > MEM_SIZE - 3):
+        while(load_index >= MEM_SIZE - 3):
             load_index = int(load_index/10)
 
         # if(load_index * -1 > MEM_SIZE):
