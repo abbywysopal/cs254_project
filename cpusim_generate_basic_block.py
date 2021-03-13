@@ -1,7 +1,5 @@
-#   ======================= A RISCV RANDOM TEST CASES GENERATOR ======================    #
-#   Program takes as input number of test cases to produce, number of instructions, and   #
-#   number of registers to use. Generates the instructions in binary, hex, and assembly.  #
-#                           Authored by Amr Mohamed                                       #
+# inspired by Amr Mohamed's RISCV random test case generator
+# https://github.com/Amrsaeed/riscv_test_generator
 
 import random
 import numpy as np
@@ -26,93 +24,44 @@ def add_instructions(assembly):
     instructions_list_assembly.append(assembly)
 
 # Function to generate an R-Type instruction
-'''
-funct 7         rs2            rs1         funct3        rd            opcode
-(31,25)=7     (24, 20)=5    (19,15)=5      (14, 12)=3    (11, 7)=5     (6,0)=7
-'''
 def generate_r(name):
-    # #print('Generating R')
-    opcode_instruction = OPCODES[name]
-    func_instruction = FUNCT_CODES[name]
-
     rs1_decimal = random.choice(REGISTERS_TO_USE)
-    rs1_binary = "{0:05b}".format(rs1_decimal)
-
     rs2_decimal = random.choice(REGISTERS_TO_USE)
-    rs2_binary = "{0:05b}".format(rs2_decimal)
-
     rd_decimal = random.choice(REGISTERS_TO_USE)
-    rd_binary = "{0:05b}".format(rd_decimal)
 
     instruction_assembly = name + " R" + str(rd_decimal) + ",R" + str(rs1_decimal) + ",R" + str(
         rs2_decimal)
-
-    instruction_binary = FUNCT7[name] + rs2_binary + rs1_binary + FUNCT3[name] + rd_binary + opcode_instruction
 
     add_instructions(instruction_assembly)
 
 # ADDI x ADDI r1, r1, 100
 # Function to generate an I-Type instruction
-'''
-    imm          rs1         funct3      rd          opcode
-    (32,20)     (19,15)     (14, 12)    (11, 7)     (6,0)
-'''
 def generate_i(name):
-    # #print('Generating I')
-    opcode_instruction = OPCODES[name]
-    func_instruction = FUNCT_CODES[name]
-
     rs1_decimal = random.choice(REGISTERS_TO_USE)
-    rs1_binary = "{0:05b}".format(rs1_decimal)
-
     rd_decimal = random.choice(REGISTERS_TO_USE)
-    rd_binary = "{0:05b}".format(rd_decimal)
 
     if name in LOAD_INSTRUCTION_NAMES:
-        '''
-    imm         rd         opcode
-    (31,12)    (11, 7)     (6,0)
-    '''
         rs1_decimal = 0
         imm_decimal = random.choice(STORED_MEMORY_LOCATIONS)  # Choose from stored in locations
         instruction_assembly = name + " R" + str(rd_decimal) + "," + str(imm_decimal)
-        imm_binary = "{0:020b}".format(imm_decimal)
-        instruction_binary = imm_binary + rd_binary + opcode_instruction
 
     else:
         imm_decimal = np.random.randint(0, 480)
         instruction_assembly = name + " R" + str(rd_decimal) + ",R" + str(rs1_decimal) + "," + str(
             imm_decimal)
-    
-        imm_binary = "{0:012b}".format(imm_decimal)
-        instruction_binary = imm_binary + rs1_binary + FUNCT3[name] + rd_binary + opcode_instruction
 
     add_instructions(instruction_assembly)
 
 # Function to generate a U-Type instruction
-# WRS 6
-# WR R2
-'''
-imm         rd         opcode
-(31,12)    (11, 7)     (6,0)
-'''
 def generate_u(name):
-    # #print('Generating U')
-    opcode_instruction = OPCODES[name]
     rd_decimal = random.choice(REGISTERS_TO_USE)
-    rd_binary = "{0:05b}".format(rd_decimal)
-
-    #TODO: change to a random number
     imm_decimal = np.random.randint(0, 480)
-    # imm_decimal = 0
-    imm_binary = "{0:020b}".format(imm_decimal)
 
     if name == 'WRS':
         instruction_assembly = name + " " + str(imm_decimal)
     else:
         instruction_assembly = name + " R" + str(rd_decimal)
-        
-    instruction_binary = imm_binary + rd_binary + opcode_instruction
+
     add_instructions(instruction_assembly)
 
 
@@ -132,18 +81,6 @@ if __name__ == '__main__':
     TYPES_TO_INSTRUCTION = dict(U_TYPE={'WRS', 'WR'},
                                 I_TYPE={'LDI', 'ADDI', 'SUBI', 'MULI', "DIVI", 'STORE', 'LOAD'},
                                 R_TYPE={'XOR', 'ADD', 'SUB', 'MUL', "DIV"})
-
-    OPCODES = dict(LDI='0110111', LOAD='0000011', ADDI='0010011', MULI='0010011', DIVI='0010011', 
-        MUL='0110011', DIV='0110011', ADD='0110011', XOR='0110011', SUB='0110011', SUBI='0010011', 
-        STORE='0100011', WR='0110111', WRS='0110111')
-
-
-    FUNCT_CODES = dict(WRS='000001', WR='000010', LDI='000011', ADDI='000100', SUBI='000101', MULI='000110',
-               DIVI='000111', STORE='001000', LOAD='001001', XOR='001010', ADD='001011', SUB='001100', MUL='001101',
-               DIV='001110')
-
-    FUNCT3 = dict(ADDI='000', SUBI='000', MULI='000', DIVI='100', STORE='010', LOAD= '011',XOR='100', ADD='000', SUB='000', MUL='000', DIV='100')
-    FUNCT7 = dict(XOR='0000000', ADD='0000000', SUB='0100000', MUL='0000001', DIV='0000001')
 
     LOAD_INSTRUCTION_NAMES = {'LDI'}
 

@@ -202,11 +202,6 @@ def main(path):
 
 
 if __name__ == '__main__':
-
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument('--file', required=True, help='Input .ass file')
-    # parser.add_argument('--pipelined', required=False, default=0, type=int, choices={0, 1}, help='Run in pipelined mode?')
-
-    # args = parser.parse_args()
+    #run generated data through cpu sim
     path = str(sys.argv[1])
     main(path)
