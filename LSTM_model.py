@@ -10,6 +10,9 @@ import glob
 import numpy as np
 
 def create_dataset(path):
+    '''
+        creating dataset from data generated and fed through cpusim
+    '''
     dataset = []
     test_filenames = glob.glob(path + '*')
     for filename in test_filenames:
@@ -20,7 +23,6 @@ def create_dataset(path):
     labels = []
     nmaps = []
     targets = []
-
 
     for item in dataset: 
         label = item['instr_cycle']
@@ -74,6 +76,9 @@ def create_and_train_model(training_padded, training_targets, training_labels, t
     epochs = 10
     correct = 0
 
+    '''
+        continue to train until atleast 2% accuracte
+    '''
     while(correct < TRAINING_SIZE/50):
 
         history = model.fit(training_padded, training_labels, 
