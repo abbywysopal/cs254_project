@@ -181,10 +181,6 @@ class STOREInstruction(Instruction):
         c = (self.operand_vals[0] >> 16) & 0xFF
         d = (self.operand_vals[0] >> 24) & 0xFF
 
-        # #print("OPS", self.operand_vals)
-        # #print(self.operand_vals[1] + self.operand_vals[2] + 0)
-        # #print(len(gv.data_mem))
-
         load_index = self.operand_vals[1] + self.operand_vals[2] + 0
         if(load_index < 0):
             load_index *= -1
@@ -206,11 +202,6 @@ class LOADInstruction(WRITEBACKInstruction):
 
     def execute(self):
         self.result = 0
-        # #print("LEN", len(gv.data_mem))
-        # #print("OPS",self.operand_vals)
-        # #print("0", self.operand_vals[0])
-        # #print("1", self.operand_vals[1])
-        # #print(self.operand_vals[0] + self.operand_vals[1] + 0)
 
         load_index = self.operand_vals[0] + self.operand_vals[1] + 0
         if(load_index < 0):
@@ -218,9 +209,6 @@ class LOADInstruction(WRITEBACKInstruction):
             
         while(load_index >= MEM_SIZE - 3):
             load_index = int(load_index/10)
-
-        # if(load_index * -1 > MEM_SIZE):
-        #     load_index = -1 * int(load_index/10)
 
         a = gv.data_mem[load_index + 0]
         b = gv.data_mem[load_index + 1]

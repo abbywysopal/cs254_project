@@ -11,10 +11,6 @@ from writeback_unit import *
 from registerfile import *
 from pipeline import *
 import gv
-import _thread 
-
-debug = True
-debug = False
 
 class Computor:
     def __init__(self, program):
@@ -27,59 +23,9 @@ class Computor:
         gv.R = RegisterFile(48)
         self.clock_cnt = 0
 
-    def run_non_pipelined(self, filename):
-        debug = False
-        if debug:
-            print("RUNNING NON-PIPELINED")
-        last_instr = getNOP()
-        while not isinstance(last_instr, HALTInstruction):
-            if debug:
-                print("\n\nSTART")
-                print("Before anything:", str(gv.pipeline), "clk", self.clock_cnt)
-            # fetch
-            self.fetchunit.fetch(1)
-            self.clock_cnt += 1
-            if debug:
-                print("After fetch:", str(gv.pipeline), "clk", self.clock_cnt)
-            gv.pipeline.advance()
-
-            # decode
-            self.decodeunit.decode()
-            self.clock_cnt += 1
-            if debug:
-                print("After decode:", str(gv.pipeline), "clk", self.clock_cnt)
-            gv.pipeline.advance()
-
-            # execute
-            self.execunit.execute()
-            self.clock_cnt += 1
-            if debug:
-                print("After execute:", str(gv.pipeline), "clk", self.clock_cnt)
-            gv.pipeline.advance()
-
-            # writeback
-            if debug:
-                print("Before writeback:", str(gv.pipeline), "clk", self.clock_cnt)
-            last_instr = self.wbunit.writeback()
-            self.clock_cnt += 1
-            if debug:
-                print("After writeback:", str(gv.pipeline), "clk", self.clock_cnt)
-            gv.pipeline.advance()
-
-            if debug:
-                print("END")
-
-        # if debug:
-        output_filename = "tests/data/output_assembly" + filename[filename.index("y") + 1 :filename.index(".")] + ".txt"
-        output_file = open(output_filename, 'w')
-        output_file.write(str(self.clock_cnt))
-
-    def run_pipelined(self, filename, path):
-        debug = False
+    def run_pipelined(self, filename, path, debug=False):
         cycles = []
-        # debug = True
-        if debug:
-            print("RUNNING PIPELINED")
+
         last_instr = getNOP()
         while not isinstance(last_instr, HALTInstruction):
             self.clock_cnt += 1
@@ -113,8 +59,7 @@ class Computor:
 
             if debug:
                 print("END")
-        #
-        # if debug:
+
         cycles.append(str(self.clock_cnt))
         output_filename = path + "output_assembly" + filename[filename.index("y") + 1 :filename.index(".")] + ".txt"
         with open(output_filename, 'w') as output_file:
@@ -162,26 +107,9 @@ def assemble(asm, program):
             instr = get_instruction(line)
             program.append(instr)
 
-
-def print_data_mem():
-    # print("\n+    0 1 2 3"),
-    print("")
-    for idx, word in enumerate(gv.data_mem):
-        print(idx, word)
-        # if idx % 4 == 0:
-        #     print "\n" + (str(idx) + ".").ljust(4),
-        #
-        # if word < 256:
-        #     to_print = chr(word)
-        #     print to_print if to_print.isalnum() else " ",
-        # else:
-        #     print word,
-
-
 def main(path):
     files = glob.glob(path + "*.ass")
     for filename in files:
-        # print(filename)
         with open(filename, 'r') as ass_file:
             asm = ass_file.readlines()
 
@@ -193,13 +121,7 @@ def main(path):
         gv.is_pipelined = True
 
         pc3000 = Computor(program)
-        # _thread.start_new_thread(pc3000.run_pipelined,(filename,path))
         pc3000.run_pipelined(filename,path)
-        # pc3000.run_non_pipelined(filename,path)
-
-    # if debug:
-    # print_data_mem()
-
 
 if __name__ == '__main__':
     #run generated data through cpu sim
