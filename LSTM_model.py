@@ -58,6 +58,23 @@ def pre_processing(instructions, targets, labels, max_length = 4):
 
     return training_padded, training_targets, training_labels, testing_padded, testing_targets, testing_labels
 
+def pre_processing_testdata(instructions, targets, labels, max_length = 4):
+    trunc_type='post'
+    padding_type='post'
+
+    testing_instructions = nmaps
+    testing_labels = labels
+    testing_targets = targets
+
+    testing_sequences = testing_instructions
+    testing_padded = pad_sequences(testing_sequences, maxlen=max_length, padding=padding_type)
+
+    testing_padded = np.array(testing_padded)
+    testing_labels = np.array(testing_labels)
+    testing_targets = np.array(testing_targets)
+
+    return testing_padded, testing_targets, testing_labels
+
 def create_and_train_model(training_padded, training_targets, training_labels, testing_padded, testing_targets, testing_labels, epochs=10, max_length=4):
     vocab_size = 10000
     embedding_dim = 16
@@ -73,23 +90,20 @@ def create_and_train_model(training_padded, training_targets, training_labels, t
     ])
 
     model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-    epochs = 10
     correct = 0
 
     '''
-        continue to train until atleast 2% accuracte
+        continue to train until atleast 5% accuracte
     '''
-    while(correct < TRAINING_SIZE/50):
-
+    while(correct < len(testing_labels)/30):
         history = model.fit(training_padded, training_labels, 
         epochs=epochs, validation_data=(testing_padded, testing_labels), verbose=2)
         epochs += 1
-        pred = model.predict(training_padded)
+        pred = model.predict(testing_padded)
 
-        sum_pred_correct = 0
         correct = 0
         for i in range(len(pred)):
-            if(round(sum(pred[i])) == training_targets[i]):
+            if(round(sum(pred[i])) == testing_targets[i]):
                 correct += 1
 
         print("num correct:", correct)
@@ -99,19 +113,31 @@ def create_and_train_model(training_padded, training_targets, training_labels, t
 
 max_length = 4
 
-nmaps, targets, labels = create_dataset('./cpusim/tests/data/test/json/')
+nmaps, targets, labels = create_dataset('./cpusim/tests/data/train/json/')
 
-training_padded, training_targets, training_labels, testing_padded, testing_targets, testing_labels = pre_processing(nmaps, targets, labels, max_length)
+training_padded, training_targets, training_labels, testing_padded, testing_targets, testing_labels = pre_processing(instructions=nmaps, targets=targets, labels=labels, max_length=max_length)
 
 model = create_and_train_model(training_padded=training_padded, training_targets=training_targets, 
     training_labels=training_labels, testing_padded=testing_padded, testing_targets=testing_targets, 
-    testing_labels=testing_labels, epochs=10, max_length=4)
+    testing_labels=testing_labels, epochs=20, max_length=4)
 
 pred = model.predict(testing_padded)
 correct = 0
-for i in range(len(pred)):
-    if(round(sum(pred[i])) == testing_targets[i]):
+for j in range(len(pred)):
+    if(round(sum(pred[j])) == testing_targets[j]):
         correct += 1
-
 print("num correct:", correct)
 print("out of:", len(pred))
+
+for i in range(1,32):
+    nmaps, targets, labels = create_dataset(f'./cpusim/tests/data/test{i}/json/')
+    testing_padded, testing_targets, testing_labels = pre_processing_testdata(nmaps, targets, labels, max_length)
+    pred = model.predict(testing_padded)
+    correct = 0
+    for j in range(len(pred)):
+        if(round(sum(pred[j])) == testing_targets[j]):
+            correct += 1
+
+    print("FOR ", i , "instruction size")
+    print("num correct:", correct)
+    print("out of:", len(pred))

@@ -99,7 +99,10 @@ if __name__ == '__main__':
     for test_case in range(int(TEST_CASES_NUMBER)):
         # Initializing all variables
         REGISTERS_NUMBER = 32
-        Instructions_Number = random.randint(1,31)
+        # Instructions_Number = random.randint(1,31)
+        Instructions_Number = int(sys.argv[3])
+        if(Instructions_Number == 0):
+            Instructions_Number = random.randint(1,31)
         INSTRUCTION_CURRENT = 0
         STORED_MEMORY_LOCATIONS = []
         instructions_list_assembly = []
