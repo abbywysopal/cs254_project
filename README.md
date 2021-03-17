@@ -17,7 +17,7 @@
 ## Installation
 $ git clone https://github.com/abbywysopal/cs254_project
 
-## Run the code
+## Compile and Run
 $ python run.py
 
 Generate dataset to feed into ML model
