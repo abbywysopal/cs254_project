@@ -1,7 +1,12 @@
 # Neural Network Cycle Count Prediction Model 
 
+## Background
 
-#Run the code
+
+## Installation
+$ git clone https://github.com/abbywysopal/cs254_project
+
+## Run the code
 $ python run.py
 
 Generate dataset to feed into ML model
