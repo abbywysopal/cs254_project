@@ -1,7 +1,18 @@
 # Neural Network Cycle Count Prediction Model 
 
+## Abstract
+
 ## Background
 
+## Problem
+
+## Architectural Solution
+
+## Method of evaluation
+
+## Implementation progress
+
+## Results
 
 ## Installation
 $ git clone https://github.com/abbywysopal/cs254_project
