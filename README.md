@@ -39,7 +39,7 @@ Throughout the creation of our machine learning model, we attempted several type
 
 The machine learning model’s average prediction accuracy is 10%. Figure 2 displays the machine learning model’s prediction accuracy when tested on datasets of differing basic block instruction count size. The size of the basic block increases from two instructions (leftmost column) to thirty-two instructions (rightmost column) on the x-axis, and its corresponding prediction accuracy percentage is on the y-axis. 
 
-![alt text](https://github.com/abbywysopal/cs254_project/blob/main/Result.png)
+![alt text](https://github.com/abbywysopal/cs254_project/blob/main/Results.png)
 
 ## Installation
 $ git clone https://github.com/abbywysopal/cs254_project
