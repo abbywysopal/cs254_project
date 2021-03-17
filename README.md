@@ -1,5 +1,6 @@
-# cs254_project
+# Neural Network Cycle Count Prediction Model 
 
-$ python3 run.py
 
-generates 10 basic block assembly files with 32 instrcutions in each, runs each assembly file in "tests/data" through the pipeline, creates json with data
+# Run the code
+$ python run.py
+$ python LSTM_model.py
