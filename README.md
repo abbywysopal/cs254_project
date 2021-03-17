@@ -1,7 +1,7 @@
 # Neural Network Cycle Count Prediction Model 
 
 
-## Run the code
+#Run the code
 $ python run.py
 
 Generate dataset to feed into ML model
