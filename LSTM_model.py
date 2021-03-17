@@ -103,6 +103,9 @@ def create_and_train_model(training_padded, training_targets, training_labels, t
 
         correct = 0
         for i in range(len(pred)):
+            print("pred:", pred[i])
+            print("sum:", sum(pred[i]))
+            print("target:", testing_targets[i])
             if(round(sum(pred[i])) == testing_targets[i]):
                 correct += 1
 
@@ -119,7 +122,7 @@ training_padded, training_targets, training_labels, testing_padded, testing_targ
 
 model = create_and_train_model(training_padded=training_padded, training_targets=training_targets, 
     training_labels=training_labels, testing_padded=testing_padded, testing_targets=testing_targets, 
-    testing_labels=testing_labels, epochs=20, max_length=4)
+    testing_labels=testing_labels, epochs=40, max_length=4)
 
 pred = model.predict(testing_padded)
 correct = 0
